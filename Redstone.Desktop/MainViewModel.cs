@@ -1,5 +1,5 @@
 ﻿using Redstone.Desktop.Customers;
-using Redstone.Desktop.Models;
+using Redstone.Domain.Models;
 using System;
 using System.Collections.Generic;
 using System.Text;

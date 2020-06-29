@@ -36,7 +36,7 @@ namespace Redstone.Desktop.Customers
         public RelayCommand<Customer> RemoveCustomerCommand { get; set; }
         public RelayCommand AddServiceCommand { get; set; }
         public event Action OnAddCustomerRequested = delegate { };
-        public event Action<Models.Customer> OnEditCustomerRequested = delegate { };
+        public event Action<Customer> OnEditCustomerRequested = delegate { };
 
         public CustomerViewModel(IRepository<Customer> repositoryCustomers, IRepository<Address> repositoryAddress, IDialogService dialogService, IMapper mapper)
         {
@@ -72,11 +72,9 @@ namespace Redstone.Desktop.Customers
 
         public async void EditCustomerRequested(Customer customer)
         {
-            Models.Customer EditableCustomer = new Models.Customer();
-            EditableCustomer = _mapper.Map<Models.Customer>(customer);
-            var address = await _repoAddress.FirstOrDefault(c => c.CustomerId == customer.Id);
-            EditableCustomer.Address = _mapper.Map<Models.Address>(address);
-            OnEditCustomerRequested(EditableCustomer);
+            customer.Address = new Address();
+            customer.Address = await _repoAddress.FirstOrDefault(a => a.CustomerId == customer.Id);
+            OnEditCustomerRequested(customer);
         }
     }
 }

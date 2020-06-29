@@ -10,6 +10,7 @@ namespace Redstone.Desktop.Customers
     public class EditCustomerViewModel : BindableBase
     {
         private IRepository<Customer> _repo;
+        private IMapper _mapper;
         private Models.Customer _customer;
         public Models.Customer Customer
         {
@@ -21,14 +22,16 @@ namespace Redstone.Desktop.Customers
             }
         }
 
-        public RelayCommand SaveCustomerCommand { get; set; }
-        public RelayCommand CancelCommand { get; set; }
+        public RelayCommand SaveCustomerCommand { get; private set; }
+        public RelayCommand CancelCommand { get; private set; }
         public event Action Done = delegate { };
 
-        public EditCustomerViewModel(IRepository<Customer> repository)
+        public EditCustomerViewModel(IRepository<Customer> repository, IMapper mapper)
         {
             _repo = repository;
+            _mapper = mapper;
             CancelCommand = new RelayCommand(OnCancel);
+            SaveCustomerCommand = new RelayCommand(OnSave, CanSave);
         }
 
         public void RaiseCanChange(object sender, EventArgs e)
@@ -36,15 +39,21 @@ namespace Redstone.Desktop.Customers
             SaveCustomerCommand.RaiseCanExecuteChanged();
         }
 
-        public void SetCurrentCustomer(Models.Customer customer)
+        private Customer _editingCustomer = null;
+        public void SetCurrentCustomer(Customer customer)
         {
-            Customer = customer;
-            SaveCustomerCommand = new RelayCommand(UpdateCustomer, CanSave);
+            _editingCustomer = customer;
+            Customer = new Models.Customer();
+            Customer = _mapper.Map<Models.Customer>(customer);
+            Customer.ErrorsChanged += RaiseCanChange;
+            Customer.Address.ErrorsChanged += RaiseCanChange;
         }
 
-        public async void UpdateCustomer()
+        public async void OnSave()
         {
-            
+            _editingCustomer = _mapper.Map(Customer, _editingCustomer);
+            await _repo.Update(_editingCustomer);
+            Done();
         }
 
         public void OnCancel()
@@ -54,8 +63,7 @@ namespace Redstone.Desktop.Customers
 
         private bool CanSave()
         {
-            return true;
-            // return !Customer.HasErrors & !Customer.Address.HasErrors;
+            return !Customer.HasErrors & !Customer.Address.HasErrors;
         }
     }
 }

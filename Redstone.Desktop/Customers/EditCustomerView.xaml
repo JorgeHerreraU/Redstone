@@ -75,7 +75,7 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <Button Margin="10,0,10,0" Width="100" Grid.Column="0" Command="{Binding SaveCustomerCommand}" Content="Agregar"/>
+            <Button Margin="10,0,10,0" Width="100" Grid.Column="0" Command="{Binding SaveCustomerCommand}" Content="Guardar"/>
             <Button Margin="10,0,10,0" Width="100" Grid.Column="1" Command="{Binding CancelCommand}" Content="Cancelar"/>
         </Grid>
     </Grid>

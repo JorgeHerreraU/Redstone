@@ -6,7 +6,6 @@ namespace Redstone.Domain.Models
     public partial class Address : BaseEntity
     {
         public string Street { get; set; }
-        
         public int Number { get; set; }
         public string Apartment { get; set; }
         public string District { get; set; }
