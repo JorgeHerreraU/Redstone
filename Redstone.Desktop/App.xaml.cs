@@ -1,7 +1,10 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using AutoMapper;
+using Microsoft.Extensions.DependencyInjection;
 using Redstone.Data;
 using Redstone.Data.Services;
+using Redstone.Desktop.Controls;
 using Redstone.Desktop.Customers;
+using Redstone.Desktop.Profiles;
 using Redstone.Domain.Models;
 using Redstone.Domain.Services;
 using System;
@@ -29,13 +32,24 @@ namespace Redstone.Desktop
         private void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<MainWindow>();
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile(new CustomerProfile());
+                cfg.AddProfile(new AddressProfile());
+            });
+            // Automapper
+            IMapper mapper = config.CreateMapper();
+            services.AddSingleton(mapper);
+            // Controls
+            services.AddSingleton<IDialogService, DialogService>();
             // Data Repository
             services.AddSingleton<RedstoneDbContext>();
             services.AddScoped(typeof(IRepository<>), typeof(EntityFrameworkRepository<>));
-            //services.AddSingleton<IRepository<Customer>, EntityFrameworkRepository<Customer>>();
             // View Models
             services.AddScoped<MainViewModel>();
             services.AddScoped<CustomerViewModel>();
+            services.AddScoped<AddCustomerViewModel>();
+            services.AddScoped<EditCustomerViewModel>();
         }
 
         private void OnStartup(object sender, StartupEventArgs e)

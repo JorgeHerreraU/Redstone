@@ -11,6 +11,12 @@
         <DataTemplate DataType="{x:Type cust:CustomerViewModel}">
             <cust:CustomerView/>
         </DataTemplate>
+        <DataTemplate DataType="{x:Type cust:AddCustomerViewModel}">
+            <cust:AddCustomerView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type cust:EditCustomerViewModel}">
+            <cust:EditCustomerView/>
+        </DataTemplate>
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>

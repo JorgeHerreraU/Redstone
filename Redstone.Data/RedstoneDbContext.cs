@@ -31,7 +31,7 @@ namespace Redstone.Data
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseNpgsql("Host=ec2-52-22-216-69.compute-1.amazonaws.com;Database=d103isv8tus35j;Username=nuxjmdslibvhfj;Password=083bbd65dd2d2f28dd6279c9bb311a1d3e427643cd4748aafac8c7a3834d8846;sslmode=Require;Trust Server Certificate=true");
+                optionsBuilder.UseNpgsql("Host=ec2-52-22-216-69.compute-1.amazonaws.com;Database=d103isv8tus35j;Username=nuxjmdslibvhfj;Password=083bbd65dd2d2f28dd6279c9bb311a1d3e427643cd4748aafac8c7a3834d8846; SSL Mode=Require; Trust Server Certificate=True");
             }
         }
 
@@ -40,6 +40,10 @@ namespace Redstone.Data
             modelBuilder.Entity<Address>(entity =>
             {
                 entity.ToTable("address");
+
+                entity.HasIndex(x => x.CustomerId)
+                    .HasName("address_customer_id_uindex")
+                    .IsUnique();
 
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
@@ -76,9 +80,8 @@ namespace Redstone.Data
                     .HasMaxLength(250);
 
                 entity.HasOne(d => d.Customer)
-                    .WithMany(p => p.Address)
-                    .HasForeignKey(x => x.CustomerId)
-                    .OnDelete(DeleteBehavior.Cascade)
+                    .WithOne(p => p.Address)
+                    .HasForeignKey<Address>(x => x.CustomerId)
                     .HasConstraintName("address_customer_id_fk");
             });
 

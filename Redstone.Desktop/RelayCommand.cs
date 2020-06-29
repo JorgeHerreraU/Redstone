@@ -15,15 +15,39 @@ namespace Redstone.Desktop
             _execute = execute;
             _canExecute = canExecute;
         }
-        
-        public event EventHandler CanExecuteChanged
+
+        public event EventHandler CanExecuteChanged = delegate { };
+
+        public void RaiseCanExecuteChanged()
         {
-            add { CommandManager.RequerySuggested += value; }
-            remove { CommandManager.RequerySuggested -= value; }
+            CanExecuteChanged(this, EventArgs.Empty);
         }
 
         public bool CanExecute(object parameter) => _canExecute?.Invoke() ?? true;
 
         public void Execute(object parameter) => _execute.Invoke();
+    }
+
+    public class RelayCommand<T> : ICommand
+    {
+        private Func<T, bool> _canExecute;
+        private Action<T> _execute;
+
+        public RelayCommand(Action<T> execute, Func<T, bool> canExecute = null)
+        {
+            _execute = execute;
+            _canExecute = canExecute;
+        }
+
+        public event EventHandler CanExecuteChanged = delegate { };
+
+        public void RaiseCanExecuteChanged()
+        {
+            CanExecuteChanged(this, EventArgs.Empty);
+        }
+
+        public bool CanExecute(object parameter) => _canExecute?.Invoke((T)parameter) ?? true;
+
+        public void Execute(object parameter) => _execute.Invoke((T)parameter);
     }
 }
