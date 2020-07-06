@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Redstone.Desktop"
         xmlns:cust="clr-namespace:Redstone.Desktop.Customers"
+        xmlns:serv="clr-namespace:Redstone.Desktop.Services"
         mc:Ignorable="d"
         Title="Administrador de Proyectos" Height="450" Width="800">
     <Window.Resources>
@@ -16,6 +17,12 @@
         </DataTemplate>
         <DataTemplate DataType="{x:Type cust:EditCustomerViewModel}">
             <cust:EditCustomerView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type serv:AddServiceViewModel}">
+            <serv:AddServiceView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type serv:ServiceViewModel}">
+            <serv:ServiceView/>
         </DataTemplate>
     </Window.Resources>
     <Grid>
@@ -33,6 +40,7 @@
                 Command="{Binding GoToCustomer}"
                 Grid.Column="0" />
         <Button Content="Servicios"
+                Command="{Binding GoToServices}"
                 Grid.Column="2" />
         </Grid>
         <Grid x:Name="MainContent" Grid.Row="1">

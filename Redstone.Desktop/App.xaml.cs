@@ -5,6 +5,7 @@ using Redstone.Data.Services;
 using Redstone.Desktop.Controls;
 using Redstone.Desktop.Customers;
 using Redstone.Desktop.Profiles;
+using Redstone.Desktop.Services;
 using Redstone.Domain.Models;
 using Redstone.Domain.Services;
 using System;
@@ -50,6 +51,8 @@ namespace Redstone.Desktop
             services.AddScoped<CustomerViewModel>();
             services.AddScoped<AddCustomerViewModel>();
             services.AddScoped<EditCustomerViewModel>();
+            services.AddScoped<ServiceViewModel>();
+            services.AddScoped<AddServiceViewModel>();
         }
 
         private void OnStartup(object sender, StartupEventArgs e)

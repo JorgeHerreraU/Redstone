@@ -13,10 +13,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Services\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Redstone.Data\Redstone.Data.csproj" />
     <ProjectReference Include="..\Redstone.Domain\Redstone.Domain.csproj" />
   </ItemGroup>

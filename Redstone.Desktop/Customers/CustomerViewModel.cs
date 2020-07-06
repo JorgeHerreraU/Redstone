@@ -1,5 +1,4 @@
 ﻿using Accessibility;
-using AutoMapper;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Redstone.Desktop.Controls;
 using Redstone.Domain.Models;
@@ -7,6 +6,7 @@ using Redstone.Domain.Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Text;
 
 namespace Redstone.Desktop.Customers
@@ -16,7 +16,6 @@ namespace Redstone.Desktop.Customers
         private IRepository<Customer> _repoCustomers;
         private IRepository<Address> _repoAddress;
         private IDialogService _dialogService;
-        private IMapper _mapper;
 
 
         private ObservableCollection<Customer> _customers;
@@ -30,29 +29,48 @@ namespace Redstone.Desktop.Customers
                 RemoveCustomerCommand.RaiseCanExecuteChanged();
             }
         }
-
+        private List<Customer> _allCustomers;
+        private string _searchInput;
+        public string SearchInput
+        {
+            get => _searchInput;
+            set
+            {
+                _searchInput = value;
+                NotifyPropertyChanged();
+                FilterClients(_searchInput);
+            }
+        }
         public RelayCommand AddCustomerCommand { get; set; }
         public RelayCommand<Customer> EditCustomerCommand { get; set; }
         public RelayCommand<Customer> RemoveCustomerCommand { get; set; }
-        public RelayCommand AddServiceCommand { get; set; }
+        public RelayCommand<Customer> AddServiceCommand { get; set; }
+        public RelayCommand ClearSearchCommand { get; set; }
         public event Action OnAddCustomerRequested = delegate { };
         public event Action<Customer> OnEditCustomerRequested = delegate { };
+        public event Action<Customer> OnAddServiceRequested = delegate { };
 
-        public CustomerViewModel(IRepository<Customer> repositoryCustomers, IRepository<Address> repositoryAddress, IDialogService dialogService, IMapper mapper)
+        public CustomerViewModel
+            (
+            IRepository<Customer> repositoryCustomers,
+            IRepository<Address> repositoryAddress,
+            IDialogService dialogService
+            )
         {
             _repoCustomers = repositoryCustomers;
             _repoAddress = repositoryAddress;
             _dialogService = dialogService;
-            _mapper = mapper;
             RemoveCustomerCommand = new RelayCommand<Customer>(OnRemove);
             AddCustomerCommand = new RelayCommand(AddCustomerRequested);
             EditCustomerCommand = new RelayCommand<Customer>(EditCustomerRequested);
+            ClearSearchCommand = new RelayCommand(OnClearSearch);
+            AddServiceCommand = new RelayCommand<Customer>(AddServiceRequested);
         }
 
         public async void LoadCustomers()
         {
-            var customers = await _repoCustomers.GetAll();
-            Customers = new ObservableCollection<Customer>(customers);
+            _allCustomers = (List<Customer>)await _repoCustomers.GetAll();
+            Customers = new ObservableCollection<Customer>(_allCustomers);
         }
 
         public async void OnRemove(Customer customer)
@@ -75,6 +93,28 @@ namespace Redstone.Desktop.Customers
             customer.Address = new Address();
             customer.Address = await _repoAddress.FirstOrDefault(a => a.CustomerId == customer.Id);
             OnEditCustomerRequested(customer);
+        }
+
+        private void FilterClients(string searchInput)
+        {
+            if (string.IsNullOrWhiteSpace(searchInput))
+            {
+                Customers = new ObservableCollection<Customer>(_allCustomers);
+                return;
+            }
+            else
+            {
+                Customers = new ObservableCollection<Customer>(_allCustomers.Where(c => c.Fullname.ToLower().Contains(searchInput.ToLower())));
+            }
+        }
+        public void OnClearSearch()
+        {
+            SearchInput = null;
+        }
+
+        public void AddServiceRequested(Customer customer)
+        {
+            OnAddServiceRequested(customer);
         }
     }
 }

@@ -27,8 +27,8 @@
                         HorizontalAlignment="Right"
                         Grid.Column="1">
                 <Label Content="Buscar: "/>
-                <TextBox Width="150"/>
-                <Button Content="X"/>
+                <TextBox Width="150" Text="{Binding SearchInput, UpdateSourceTrigger=PropertyChanged}"/>
+                <Button Content="X" Command="{Binding ClearSearchCommand}"/>
             </StackPanel>
         </Grid>
         <DataGrid ItemsSource="{Binding Customers}"

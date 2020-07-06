@@ -21,17 +21,20 @@ namespace Redstone.Data
         public virtual DbSet<Payment> Payment { get; set; }
         public virtual DbSet<Report> Report { get; set; }
         public virtual DbSet<Service> Service { get; set; }
+        public virtual DbSet<ServiceCategory> ServiceCategory { get; set; }
+        public virtual DbSet<ServiceOffered> ServiceOffered { get; set; }
         public virtual DbSet<Stage> Stage { get; set; }
         public virtual DbSet<Stagesupply> Stagesupply { get; set; }
         public virtual DbSet<Supply> Supply { get; set; }
         public virtual DbSet<Team> Team { get; set; }
+        public virtual DbSet<Users> Users { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseNpgsql("Host=ec2-52-22-216-69.compute-1.amazonaws.com;Database=d103isv8tus35j;Username=nuxjmdslibvhfj;Password=083bbd65dd2d2f28dd6279c9bb311a1d3e427643cd4748aafac8c7a3834d8846; SSL Mode=Require; Trust Server Certificate=True");
+                optionsBuilder.UseNpgsql("Host=ec2-52-22-216-69.compute-1.amazonaws.com;Username=nuxjmdslibvhfj;Password=083bbd65dd2d2f28dd6279c9bb311a1d3e427643cd4748aafac8c7a3834d8846;Database=d103isv8tus35j;SSL Mode=Require;Trust Server Certificate=true");
             }
         }
 
@@ -216,20 +219,13 @@ namespace Redstone.Data
                     .HasColumnName("id")
                     .HasViewColumnName("id");
 
+                entity.Property(e => e.CartId)
+                    .HasColumnName("cart_id")
+                    .HasViewColumnName("cart_id");
+
                 entity.Property(e => e.CustomerId)
                     .HasColumnName("customer_id")
                     .HasViewColumnName("customer_id");
-
-                entity.Property(e => e.Description)
-                    .HasColumnName("description")
-                    .HasViewColumnName("description")
-                    .HasMaxLength(255);
-
-                entity.Property(e => e.Name)
-                    .IsRequired()
-                    .HasColumnName("name")
-                    .HasViewColumnName("name")
-                    .HasMaxLength(255);
 
                 entity.Property(e => e.RequestDate)
                     .HasColumnName("request_date")
@@ -237,10 +233,70 @@ namespace Redstone.Data
                     .HasColumnType("date")
                     .HasDefaultValueSql("now()");
 
+                entity.Property(e => e.ServiceofferedId)
+                    .HasColumnName("serviceoffered_id")
+                    .HasViewColumnName("serviceoffered_id");
+
                 entity.HasOne(d => d.Customer)
                     .WithMany(p => p.Service)
                     .HasForeignKey(x => x.CustomerId)
                     .HasConstraintName("service_customer_id_fk");
+
+                entity.HasOne(d => d.Serviceoffered)
+                    .WithMany(p => p.Service)
+                    .HasForeignKey(x => x.ServiceofferedId)
+                    .HasConstraintName("service_services_offered_id_fk");
+            });
+
+            modelBuilder.Entity<ServiceCategory>(entity =>
+            {
+                entity.ToTable("service_category");
+
+                entity.Property(e => e.Id)
+                    .HasColumnName("id")
+                    .HasViewColumnName("id");
+
+                entity.Property(e => e.Description)
+                    .HasColumnName("description")
+                    .HasViewColumnName("description")
+                    .HasMaxLength(255);
+            });
+
+            modelBuilder.Entity<ServiceOffered>(entity =>
+            {
+                entity.ToTable("service_offered");
+
+                entity.HasIndex(x => x.CategoryId)
+                    .HasName("services_offered_service_category_id_uindex")
+                    .IsUnique();
+
+                entity.Property(e => e.Id)
+                    .HasColumnName("id")
+                    .HasViewColumnName("id")
+                    .HasDefaultValueSql("nextval('services_offered_id_seq'::regclass)");
+
+                entity.Property(e => e.BasePrice)
+                    .HasColumnName("base_price")
+                    .HasViewColumnName("base_price");
+
+                entity.Property(e => e.CategoryId)
+                    .HasColumnName("category_id")
+                    .HasViewColumnName("category_id");
+
+                entity.Property(e => e.Description)
+                    .HasColumnName("description")
+                    .HasViewColumnName("description")
+                    .HasMaxLength(255);
+
+                entity.Property(e => e.Name)
+                    .HasColumnName("name")
+                    .HasViewColumnName("name")
+                    .HasMaxLength(255);
+
+                entity.HasOne(d => d.Category)
+                    .WithOne(p => p.ServiceOffered)
+                    .HasForeignKey<ServiceOffered>(x => x.CategoryId)
+                    .HasConstraintName("services_offered_service_category_id_fk");
             });
 
             modelBuilder.Entity<Stage>(entity =>
@@ -254,6 +310,11 @@ namespace Redstone.Data
                 entity.Property(e => e.Ammount)
                     .HasColumnName("ammount")
                     .HasViewColumnName("ammount");
+
+                entity.Property(e => e.Description)
+                    .HasColumnName("description")
+                    .HasViewColumnName("description")
+                    .HasMaxLength(255);
 
                 entity.Property(e => e.IsPaid)
                     .HasColumnName("is_paid")
@@ -353,13 +414,25 @@ namespace Redstone.Data
             {
                 entity.ToTable("team");
 
+                entity.HasIndex(x => x.CategoryId)
+                    .HasName("team_category_id_uindex")
+                    .IsUnique();
+
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasViewColumnName("id");
 
+                entity.Property(e => e.CategoryId)
+                    .HasColumnName("category_id")
+                    .HasViewColumnName("category_id");
+
                 entity.Property(e => e.Fee)
                     .HasColumnName("fee")
                     .HasViewColumnName("fee");
+
+                entity.Property(e => e.IsBudgeting)
+                    .HasColumnName("is_budgeting")
+                    .HasViewColumnName("is_budgeting");
 
                 entity.Property(e => e.Name)
                     .IsRequired()
@@ -371,6 +444,61 @@ namespace Redstone.Data
                     .IsRequired()
                     .HasColumnName("type")
                     .HasViewColumnName("type")
+                    .HasMaxLength(255);
+
+                entity.HasOne(d => d.Category)
+                    .WithOne(p => p.Team)
+                    .HasForeignKey<Team>(x => x.CategoryId)
+                    .HasConstraintName("team_service_category_id_fk");
+            });
+
+            modelBuilder.Entity<Users>(entity =>
+            {
+                entity.ToTable("users");
+
+                entity.Property(e => e.Id)
+                    .HasColumnName("id")
+                    .HasViewColumnName("id");
+
+                entity.Property(e => e.CreatedAt)
+                    .HasColumnName("createdAt")
+                    .HasViewColumnName("createdAt")
+                    .HasColumnType("timestamp with time zone");
+
+                entity.Property(e => e.Email)
+                    .HasColumnName("email")
+                    .HasViewColumnName("email")
+                    .HasMaxLength(255);
+
+                entity.Property(e => e.Password)
+                    .HasColumnName("password")
+                    .HasViewColumnName("password")
+                    .HasMaxLength(255);
+
+                entity.Property(e => e.Profile)
+                    .HasColumnName("profile")
+                    .HasViewColumnName("profile")
+                    .HasMaxLength(255)
+                    .HasDefaultValueSql("'Customer'::character varying");
+
+                entity.Property(e => e.ResetPasswordExpires)
+                    .HasColumnName("resetPasswordExpires")
+                    .HasViewColumnName("resetPasswordExpires")
+                    .HasColumnType("timestamp with time zone");
+
+                entity.Property(e => e.ResetPasswordToken)
+                    .HasColumnName("resetPasswordToken")
+                    .HasViewColumnName("resetPasswordToken")
+                    .HasMaxLength(255);
+
+                entity.Property(e => e.UpdatedAt)
+                    .HasColumnName("updatedAt")
+                    .HasViewColumnName("updatedAt")
+                    .HasColumnType("timestamp with time zone");
+
+                entity.Property(e => e.Username)
+                    .HasColumnName("username")
+                    .HasViewColumnName("username")
                     .HasMaxLength(255);
             });
 

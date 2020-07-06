@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Globalization;
 
 namespace Redstone.Domain.Models
 {
@@ -11,6 +9,7 @@ namespace Redstone.Domain.Models
         {
             Service = new HashSet<Service>();
         }
+
         public string Firstname { get; set; }
         public string Lastname { get; set; }
         public string Email { get; set; }
