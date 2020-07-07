@@ -13,7 +13,6 @@ namespace Redstone.Domain.Models
         public int CustomerId { get; set; }
         public DateTime RequestDate { get; set; }
         public int ServiceofferedId { get; set; }
-        public int Id { get; set; }
         public Guid? CartId { get; set; }
 
         public virtual Customer Customer { get; set; }

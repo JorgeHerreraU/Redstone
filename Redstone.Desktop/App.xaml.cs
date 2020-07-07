@@ -44,7 +44,7 @@ namespace Redstone.Desktop
             // Controls
             services.AddSingleton<IDialogService, DialogService>();
             // Data Repository
-            services.AddSingleton<RedstoneDbContext>();
+            services.AddTransient<RedstoneDbContext>();
             services.AddScoped(typeof(IRepository<>), typeof(EntityFrameworkRepository<>));
             // View Models
             services.AddScoped<MainViewModel>();

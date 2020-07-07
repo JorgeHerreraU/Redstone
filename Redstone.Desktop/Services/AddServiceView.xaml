@@ -7,6 +7,26 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-            
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <Label Content="Cliente: " Grid.Row="0" Grid.Column="0"/>
+        <TextBlock Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Text="{Binding Customer.Fullname}" Width="250"/>
+        <Label Grid.Row="1" Grid.Column="0" Content="Servicio: "/>
+        <ComboBox Grid.Row="1" Grid.Column="1" ItemsSource="{Binding Services}" DisplayMemberPath="Name" Width="250" SelectedValue="{Binding SelectedService}"/>
+        <Label Grid.Row="2" Grid.Column="0" Content="Descripción:"/>
+        <TextBlock Grid.Row="2" Grid.Column="1" VerticalAlignment="Bottom" Margin="5" Width="250" TextWrapping="Wrap" Text="{Binding SelectedService.Description}" MinHeight="100"/>
+        <StackPanel Grid.Row="3" Orientation="Horizontal">
+            <Button Content="Agregar" Margin="5" Command="{Binding AddServiceCommand}"/>
+            <Button Content="Cancelar" Margin="5" Command="{Binding CancelCommand}"/>
+        </StackPanel>
+        
     </Grid>
 </UserControl>

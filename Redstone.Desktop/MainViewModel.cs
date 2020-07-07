@@ -48,6 +48,7 @@ namespace Redstone.Desktop
             _customerViewModel.OnAddServiceRequested += NavToAddService;
             _addCustomerViewModel.Done += OpenCustomerView;
             _editCustomerViewModel.Done += OpenCustomerView;
+            _addServiceViewModel.Done += OpenCustomerView;
 
             GoToCustomer = new RelayCommand(OpenCustomerView);
             GoToServices = new RelayCommand(OpenServicesView);
@@ -72,6 +73,7 @@ namespace Redstone.Desktop
 
         private void NavToAddService(Customer customer)
         {
+            _addServiceViewModel.SetCustomer(customer);
             SelectedViewModel = _addServiceViewModel;
         }
 
