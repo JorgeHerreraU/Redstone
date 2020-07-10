@@ -53,6 +53,7 @@ namespace Redstone.Desktop
             services.AddScoped<EditCustomerViewModel>();
             services.AddScoped<ServiceViewModel>();
             services.AddScoped<AddServiceViewModel>();
+            services.AddScoped<StageViewModel>();
         }
 
         private void OnStartup(object sender, StartupEventArgs e)

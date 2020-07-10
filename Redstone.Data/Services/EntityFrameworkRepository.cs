@@ -58,5 +58,10 @@ namespace Redstone.Data.Services
 
         public Task<int> CountWhere(Expression<Func<T, bool>> predicate)
             => Context.Set<T>().CountAsync(predicate);
+
+        public IQueryable<T> QueryAll()
+        {
+            return Context.Set<T>();
+        }
     }
 }

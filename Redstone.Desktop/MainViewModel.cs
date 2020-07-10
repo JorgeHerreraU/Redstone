@@ -14,6 +14,7 @@ namespace Redstone.Desktop
         private EditCustomerViewModel _editCustomerViewModel;
         private ServiceViewModel _serviceViewModel;
         private AddServiceViewModel _addServiceViewModel;
+        private StageViewModel _stageViewModel;
         private BindableBase _selectedViewModel;
         public BindableBase SelectedViewModel
         {
@@ -34,7 +35,8 @@ namespace Redstone.Desktop
             AddCustomerViewModel addCustomerViewModel,
             EditCustomerViewModel editCustomerViewModel,
             ServiceViewModel serviceViewModel,
-            AddServiceViewModel addServiceViewModel
+            AddServiceViewModel addServiceViewModel,
+            StageViewModel stageViewModel
         )
         {
             _customerViewModel = customerViewModel;
@@ -42,6 +44,7 @@ namespace Redstone.Desktop
             _editCustomerViewModel = editCustomerViewModel;
             _serviceViewModel = serviceViewModel;
             _addServiceViewModel = addServiceViewModel;
+            _stageViewModel = stageViewModel;
 
             _customerViewModel.OnAddCustomerRequested += NavToAddCustomer;
             _customerViewModel.OnEditCustomerRequested += NavToEditCustomer;
@@ -49,6 +52,7 @@ namespace Redstone.Desktop
             _addCustomerViewModel.Done += OpenCustomerView;
             _editCustomerViewModel.Done += OpenCustomerView;
             _addServiceViewModel.Done += OpenCustomerView;
+            _serviceViewModel.OnViewStageRequested += NavToStageView;
 
             GoToCustomer = new RelayCommand(OpenCustomerView);
             GoToServices = new RelayCommand(OpenServicesView);
@@ -80,6 +84,12 @@ namespace Redstone.Desktop
         private void OpenServicesView()
         {
             SelectedViewModel = _serviceViewModel;
+        }
+
+        private void NavToStageView(Service service)
+        {
+            _stageViewModel.SetService(service);
+            SelectedViewModel = _stageViewModel;
         }
     }
 }

@@ -24,6 +24,9 @@
         <DataTemplate DataType="{x:Type serv:ServiceViewModel}">
             <serv:ServiceView/>
         </DataTemplate>
+        <DataTemplate DataType="{x:Type serv:StageViewModel}">
+            <serv:StageView/>
+        </DataTemplate>
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>

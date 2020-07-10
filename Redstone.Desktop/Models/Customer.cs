@@ -11,7 +11,6 @@ namespace Redstone.Desktop.Models
         public Customer()
         {
             Address = new Address();
-            Service = new HashSet<Service>();
             Firstname = "";
             Lastname = "";
             Phone = "";
@@ -66,6 +65,5 @@ namespace Redstone.Desktop.Models
         }
 
         public Address Address { get; set; }
-        public virtual ICollection<Service> Service { get; set; }
     }
 }
