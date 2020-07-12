@@ -4,9 +4,95 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Redstone.Desktop.Services"
+             xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls" 
+             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <Style TargetType="TextBox">
+            <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="True">
+                    <Setter Property="ToolTip"
+                        Value="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=(Validation.Errors)/ErrorContent}" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
     <Grid>
-            
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0"
+              Margin="10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Label Content="Nombre:" Grid.Row="0" Grid.Column="0" Width="150"/>
+            <TextBox Margin="0,0,0,10" Grid.Row="0" Grid.Column="1" Width="350" Text="{Binding Stage.Name}" Height="25" VerticalContentAlignment="Center"/>
+            <Label Content="Equipo:" Grid.Row="1" Grid.Column="0" Width="150"/>
+            <ComboBox IsTextSearchEnabled="True" ItemsSource="{Binding Teams}" DisplayMemberPath="Name" Margin="0,0,0,10" Grid.Row="1" Grid.Column="1" Width="350" VerticalAlignment="Center" SelectedItem="{Binding SelectedTeam}"/>
+            <Label Content="Fecha:" Grid.Row="2" Grid.Column="0" Width="150"/>
+            <controls:DateTimePicker
+                Margin="0,0,0,10"
+                Grid.Row="2" 
+                Grid.Column="1" 
+                Width="350"
+                SelectedDateTime="{Binding Stage.Schedule, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                />
+            <Label Content="Precio:" Grid.Row="3" Grid.Column="0" Width="150" />
+            <TextBox IsEnabled="False" Margin="0,0,0,10" Grid.Row="3" Grid.Column="1" Width="350" VerticalContentAlignment="Center" Text="{Binding TotalPrice}" Height="25"/>
+            <Label Content="Insumo:" Width="150" Grid.Row="4" Grid.Column="0"/>
+            <ComboBox IsTextSearchEnabled="True" DisplayMemberPath="Name" Width="350" VerticalAlignment="Center" Grid.Row="4" Grid.Column="1" ItemsSource="{Binding Supplies}" SelectedItem="{Binding SelectedSupply}"/>
+            <Label Grid.Column="2" Grid.Row="4" Content="Cantidad:" VerticalContentAlignment="Center"/>
+            <TextBox Grid.Row="4" Grid.Column="3" Width="50" Height="25" VerticalContentAlignment="Center" Text="{Binding ItemQuantity}"/>
+            <Button Content="Agregar" Grid.Row="4" Grid.Column="5" Margin="5" Command="{Binding AddSupply}" CommandParameter="{Binding SelectedSupply}"/>
+            <Label Content="Lista de Insumos:" Width="150" Grid.Row="5" Grid.Column="0"/>
+            <ListView ItemsSource="{Binding Stagesupplies}" Grid.Row="5" Grid.Column="1" Width="350" SelectedItem="{Binding Stagesupply}">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Nombre" DisplayMemberBinding="{Binding Supply.Name}" Width="145"/>
+                        <GridViewColumn Header="Stock" DisplayMemberBinding="{Binding Supply.Stock}"/>
+                        <GridViewColumn Header="Cantidad" DisplayMemberBinding="{Binding Quantity}"/>
+                        <GridViewColumn Header="Precio" DisplayMemberBinding="{Binding Supply.Unitprice}"/>
+                        <GridViewColumn Header="">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button Command="{Binding Path=DataContext.RemoveSupply, RelativeSource={RelativeSource AncestorType=ListView, 
+                                               Mode=FindAncestor}}" CommandParameter="{Binding}">
+                                        <iconPacks:Material Kind="TrashCan"/>
+                                    </Button>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+            <StackPanel Orientation="Horizontal" Grid.Row="6" Grid.Column="1" Margin="0,10,0,0">
+                <Button Content="Guardar" Margin="0,0,10,0"/>
+                <Button Content="Cancelar" Command="{Binding CancelCommand}" />
+            </StackPanel>
+
+        </Grid>
     </Grid>
 </UserControl>

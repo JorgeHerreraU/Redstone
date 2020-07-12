@@ -37,7 +37,7 @@ namespace Redstone.Desktop.Services
         public RelayCommand AddServiceCommand { get; private set; }
         public event Action Done = delegate { };
 
-        public AddServiceViewModel(IRepository<Service> repo,IRepository<ServiceOffered> servicesRepo)
+        public AddServiceViewModel(IRepository<Service> repo, IRepository<ServiceOffered> servicesRepo)
         {
             _repo = repo;
             _servicesRepo = servicesRepo;
@@ -45,7 +45,7 @@ namespace Redstone.Desktop.Services
             CancelCommand = new RelayCommand(OnCancel);
             AddServiceCommand = new RelayCommand(OnAdd);
         }
-        
+
         public void SetCustomer(Customer customer)
         {
             Customer = new Customer

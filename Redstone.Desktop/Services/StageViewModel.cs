@@ -14,6 +14,7 @@ namespace Redstone.Desktop.Services
         private IRepository<Stage> _stageRepo;
         public string CustomerFullName { get; set; }
         public string ServiceName { get; set; }
+        public DateTime RequestedDate { get; set; }
         private int _serviceId;
         private ObservableCollection<Stage> _stages;
         public ObservableCollection<Stage> Stages
@@ -25,6 +26,7 @@ namespace Redstone.Desktop.Services
                 NotifyPropertyChanged();
             }
         }
+        public RelayCommand<Stage> UpdateStatusCommand { get; set; }
         public StageViewModel(IRepository<Stage> stageRepo)
         {
             _stageRepo = stageRepo;
@@ -35,6 +37,8 @@ namespace Redstone.Desktop.Services
             _serviceId = service.Id;
             CustomerFullName = service.Customer.Fullname;
             ServiceName = service.Serviceoffered.Name;
+            RequestedDate = service.RequestDate;
+            UpdateStatusCommand = new RelayCommand<Stage>(UpdateStatus);
         }
 
         public void LoadStages()
@@ -42,6 +46,11 @@ namespace Redstone.Desktop.Services
             var data = _stageRepo.QueryAll().Include(s => s.Service).Include(t => t.Team).Where(x => x.ServiceId == _serviceId);
             Stages = new ObservableCollection<Stage>(data);
 
+        }
+
+        public void UpdateStatus(Stage stage)
+        {
+            _stageRepo.Update(stage);
         }
 
     }

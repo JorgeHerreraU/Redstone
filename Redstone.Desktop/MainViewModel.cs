@@ -3,6 +3,7 @@ using Redstone.Desktop.Services;
 using Redstone.Domain.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace Redstone.Desktop
@@ -16,6 +17,7 @@ namespace Redstone.Desktop
         private AddServiceViewModel _addServiceViewModel;
         private StageViewModel _stageViewModel;
         private BindableBase _selectedViewModel;
+        private AddStageViewModel _addStageViewModel;
         public BindableBase SelectedViewModel
         {
             get => _selectedViewModel;
@@ -36,7 +38,8 @@ namespace Redstone.Desktop
             EditCustomerViewModel editCustomerViewModel,
             ServiceViewModel serviceViewModel,
             AddServiceViewModel addServiceViewModel,
-            StageViewModel stageViewModel
+            StageViewModel stageViewModel,
+            AddStageViewModel addStageViewModel
         )
         {
             _customerViewModel = customerViewModel;
@@ -45,6 +48,7 @@ namespace Redstone.Desktop
             _serviceViewModel = serviceViewModel;
             _addServiceViewModel = addServiceViewModel;
             _stageViewModel = stageViewModel;
+            _addStageViewModel = addStageViewModel;
 
             _customerViewModel.OnAddCustomerRequested += NavToAddCustomer;
             _customerViewModel.OnEditCustomerRequested += NavToEditCustomer;
@@ -52,10 +56,13 @@ namespace Redstone.Desktop
             _addCustomerViewModel.Done += OpenCustomerView;
             _editCustomerViewModel.Done += OpenCustomerView;
             _addServiceViewModel.Done += OpenCustomerView;
+            _addStageViewModel.Done += OpenServicesView;
             _serviceViewModel.OnViewStageRequested += NavToStageView;
+            _serviceViewModel.OnAddStageRequested += NavToAddStageView;
 
             GoToCustomer = new RelayCommand(OpenCustomerView);
             GoToServices = new RelayCommand(OpenServicesView);
+
         }
 
         private void OpenCustomerView()
@@ -90,6 +97,12 @@ namespace Redstone.Desktop
         {
             _stageViewModel.SetService(service);
             SelectedViewModel = _stageViewModel;
+        }
+
+        private void NavToAddStageView(Service service)
+        {
+            _addStageViewModel.SetNewStage(service);
+            SelectedViewModel = _addStageViewModel;
         }
     }
 }

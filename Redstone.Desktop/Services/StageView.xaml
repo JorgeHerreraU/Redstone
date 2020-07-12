@@ -22,14 +22,17 @@
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            
+
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Grid.Column="0">
                 <Button Content="Regresar"/>
-                <Label Content="Cliente:"/>
-                <TextBlock Text="{Binding CustomerFullName}" VerticalAlignment="Center"/>
+                <Label Content="Cliente:" Foreground="Green" FontWeight="Bold"/>
+                <TextBlock Text="{Binding CustomerFullName}" VerticalAlignment="Center" FontWeight="Bold"/>
                 <TextBlock Text=" |" VerticalAlignment="Center"/>
-                <Label Content="Servicio:"/>
-                <TextBlock Text="{Binding ServiceName}" VerticalAlignment="Center"/>
+                <Label Content="Servicio:" Foreground="Orange" FontWeight="Bold"/>
+                <TextBlock Text="{Binding ServiceName}" VerticalAlignment="Center" FontWeight="Bold"/>
+                <TextBlock Text=" |" VerticalAlignment="Center"/>
+                <Label Content="Fecha de Solicitud:" Foreground="Red" FontWeight="Bold"/>
+                <TextBlock Text="{Binding RequestedDate}" VerticalAlignment="Center" FontWeight="Bold"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal"
                         HorizontalAlignment="Right"
@@ -63,15 +66,6 @@
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Binding="{Binding Description}" Width="*" Foreground="Black" Header="Descripcion">
-                    <DataGridTextColumn.ElementStyle>
-                        <Style TargetType="{x:Type TextBlock}">
-                            <Setter Property="VerticalAlignment" Value="Center"/>
-                            <Setter Property="Background" Value="Transparent"/>
-                            <Setter Property="TextBlock.TextWrapping" Value="Wrap" />
-                        </Style>
-                    </DataGridTextColumn.ElementStyle>
-                </DataGridTextColumn>
                 <DataGridTextColumn Binding="{Binding Schedule}" Width="*" Foreground="Black" Header="Fecha Agendada" IsReadOnly="True">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}">
@@ -80,12 +74,19 @@
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridCheckBoxColumn Binding="{Binding IsPaid}" Width="*" Header="Esta Pagado">
+                <DataGridCheckBoxColumn Binding="{Binding IsPaid, UpdateSourceTrigger=PropertyChanged}" Width="*" Header="¿Pagado?" IsReadOnly="False">
                     <DataGridCheckBoxColumn.ElementStyle>
                         <Style TargetType="CheckBox">
                             <Setter Property="VerticalAlignment" Value="Center"/>
                             <Setter Property="HorizontalAlignment" Value="Center"/>
-                            <Setter Property="IsHitTestVisible" Value="False"/>
+                        </Style>
+                    </DataGridCheckBoxColumn.ElementStyle>
+                </DataGridCheckBoxColumn>
+                <DataGridCheckBoxColumn Binding="{Binding IsCompleted, UpdateSourceTrigger=PropertyChanged}" Width="*" Header="¿Completado?" IsReadOnly="False">
+                    <DataGridCheckBoxColumn.ElementStyle>
+                        <Style TargetType="CheckBox">
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                            <Setter Property="HorizontalAlignment" Value="Center"/>
                         </Style>
                     </DataGridCheckBoxColumn.ElementStyle>
                 </DataGridCheckBoxColumn>
@@ -106,43 +107,21 @@
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridTemplateColumn Width="Auto">
+                <DataGridTemplateColumn Width="Auto" Header="Acciones">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Button Content="Re-Agendar"
-                                    Command="{Binding DataContext.AddStageCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"
-                                    CommandParameter="{Binding}"
-                                    Margin="5" />
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-                <DataGridTemplateColumn Width="Auto">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <Button Content="Asociar Pago"
-                                    Command="{Binding DataContext.AddStageCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"
-                                    CommandParameter="{Binding}"
-                                    Margin="5" />
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-                <DataGridTemplateColumn Width="Auto">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <Button Content="Actualizar Estado"
-                                    Command="{Binding DataContext.AddStageCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"
-                                    CommandParameter="{Binding}"
-                                    Margin="5" />
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-                <DataGridTemplateColumn Width="Auto">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <Button Content="Asociar Reporte"
-                                    Command="{Binding DataContext.AddStageCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"
-                                    CommandParameter="{Binding}"
-                                    Margin="5" />
+                            <Menu>
+                                <MenuItem Header="_Seleccionar">
+                                    <MenuItem Header="_Reagendar" />
+                                    <MenuItem Header="_Asociar Pago" />
+                                    <MenuItem Header="_Actualizar"
+                                              Command="{Binding DataContext.UpdateStatusCommand,
+                                        RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"
+                                              CommandParameter="{Binding}"/>
+                                    <MenuItem Header="_Eliminar" />
+                                    <MenuItem Header="_Asociar Reporte" />
+                                </MenuItem>
+                            </Menu>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>

@@ -125,6 +125,10 @@ namespace Redstone.Data
             {
                 entity.ToTable("payment");
 
+                entity.HasIndex(x => x.StageId)
+                    .HasName("payment_stage_id_uindex")
+                    .IsUnique();
+
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasViewColumnName("id");
@@ -148,8 +152,8 @@ namespace Redstone.Data
                     .HasViewColumnName("transaction_date");
 
                 entity.HasOne(d => d.Stage)
-                    .WithMany(p => p.Payment)
-                    .HasForeignKey(x => x.StageId)
+                    .WithOne(p => p.Payment)
+                    .HasForeignKey<Payment>(x => x.StageId)
                     .HasConstraintName("payment_stage_id_fk");
             });
 
@@ -311,10 +315,9 @@ namespace Redstone.Data
                     .HasColumnName("ammount")
                     .HasViewColumnName("ammount");
 
-                entity.Property(e => e.Description)
-                    .HasColumnName("description")
-                    .HasViewColumnName("description")
-                    .HasMaxLength(255);
+                entity.Property(e => e.IsCompleted)
+                    .HasColumnName("is_completed")
+                    .HasViewColumnName("is_completed");
 
                 entity.Property(e => e.IsPaid)
                     .HasColumnName("is_paid")

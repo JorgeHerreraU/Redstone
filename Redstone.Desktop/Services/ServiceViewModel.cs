@@ -23,12 +23,15 @@ namespace Redstone.Desktop.Services
             }
         }
         public RelayCommand<Service> ViewStageCommand { get; set; }
+        public RelayCommand<Service> AddStageCommand { get; set; }
         public Action<Service> OnViewStageRequested = delegate { };
+        public Action<Service> OnAddStageRequested = delegate { };
         
         public ServiceViewModel(IRepository<Service> serviceRepo)
         {
             _serviceRepo = serviceRepo;
             ViewStageCommand = new RelayCommand<Service>(ViewStage);
+            AddStageCommand = new RelayCommand<Service>(AddStage);
         }
 
         public void LoadServices()
@@ -40,6 +43,11 @@ namespace Redstone.Desktop.Services
         public void ViewStage(Service service)
         {
             OnViewStageRequested(service);
+        }
+
+        public void AddStage(Service service)
+        {
+            OnAddStageRequested(service);
         }
 
     }
